@@ -4,8 +4,26 @@ import { connect } from 'react-redux';
 import { getAllPosts } from '../../api';
 import Post from '../../components/Post';
 import ItemSeperator from '../../components/ItemSeperator';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { navigateTo, ScreenNames } from '../../navigation';
 
 class Dashboard extends Component {
+
+    static navigationOptions = ({ navigation }) => {
+        const onPress = () => {
+            navigateTo(navigation, ScreenNames.UploadPost)
+        }
+        return {
+            headerRight: () => (
+                <TouchableOpacity
+                    onPress={onPress}
+                    style={{ padding: 15 }}>
+                    < Icon name="plus" size={30} color="black" />
+                </TouchableOpacity>
+            )
+        }
+    }
 
     constructor(props) {
         super(props);
@@ -54,7 +72,7 @@ class Dashboard extends Component {
                     data={this.state.posts}
                     renderItem={({ item }) => <Post {...item} />}
                     ListEmptyComponent={this._renderEmptyComponent()}
-                    keyExtractor={item => item.post_id}
+                    keyExtractor={item => item.post_id.toString()}
                     ItemSeparatorComponent={this._renderItemSeperator}
                 />
             </View>

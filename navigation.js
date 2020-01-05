@@ -6,7 +6,8 @@ import Screens from './screens';
 const Navigator = createStackNavigator({
     Login: { screen: Screens.Login },
     Register: { screen: Screens.Register },
-    Dashboard: { screen: Screens.Dashboard }
+    Dashboard: { screen: Screens.Dashboard },
+    UploadPost: { screen: Screens.UploadPost, navigationOptions: { title: 'New Post' } }
 });
 
 
@@ -15,7 +16,8 @@ export default createAppContainer(Navigator);
 export const ScreenNames = {
     Login: 'Login',
     Register: 'Register',
-    Dashboard: 'Dashboard'
+    Dashboard: 'Dashboard',
+    UploadPost: 'UploadPost'
 };
 
 export const navigateToDashboard = (navigation) => {
@@ -24,4 +26,8 @@ export const navigateToDashboard = (navigation) => {
         actions: [NavigationActions.navigate({ routeName: ScreenNames.Dashboard })],
     });
     navigation.dispatch(resetAction);
+}
+
+export const navigateTo = (navigation, screenName) => {
+    navigation.navigate(screenName);
 }
