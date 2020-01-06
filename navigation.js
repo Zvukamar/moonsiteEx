@@ -28,6 +28,6 @@ export const navigateToDashboard = (navigation) => {
     navigation.dispatch(resetAction);
 }
 
-export const navigateTo = (navigation, screenName) => {
-    navigation.navigate(screenName);
+export const navigateTo = (navigation, screenName, params) => {
+    navigation.navigate(screenName, params);
 }

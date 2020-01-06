@@ -12,7 +12,7 @@ class Dashboard extends Component {
 
     static navigationOptions = ({ navigation }) => {
         const onPress = () => {
-            navigateTo(navigation, ScreenNames.UploadPost)
+            navigateTo(navigation, ScreenNames.UploadPost, { onPostSuccess: navigation.getParam('onPostSuccess') })
         }
         return {
             headerRight: () => (
@@ -33,16 +33,25 @@ class Dashboard extends Component {
         }
     }
 
+    onPostSuccess = () => {
+        this.fetchPosts();
+    }
+
     componentDidMount() {
+        const { navigation } = this.props;
+        navigation.setParams({ onPostSuccess: this.onPostSuccess });
         this.fetchPosts();
     }
 
     fetchPosts = () => {
+        this.setState({ loading: true })
         const { user } = this.props;
         getAllPosts(user.token).then(({ data }) => {
             this.setState({ posts: data.data }, () => {
                 this.setState({ loading: false });
             })
+        }).catch(({ response }) => {
+            console.log(response)
         })
     }
 
@@ -62,6 +71,13 @@ class Dashboard extends Component {
         return <ItemSeperator />
     }
 
+    onDeleteSuccess = (post_id) => {
+        const posts = [...this.state.posts];
+        const postIndex = posts.findIndex(post => post.post_id === post_id);
+        posts.splice(postIndex, 1);
+        this.setState({ posts });
+    }
+
     render() {
         if (this.state.loading) {
             return this._renderLoading();
@@ -70,7 +86,12 @@ class Dashboard extends Component {
             <View style={styles.container}>
                 <FlatList
                     data={this.state.posts}
-                    renderItem={({ item }) => <Post {...item} />}
+                    renderItem={({ item }) => (
+                        <Post
+                            {...item}
+                            onDeleteSuccess={this.onDeleteSuccess}
+                            token={this.props.user.token} />
+                    )}
                     ListEmptyComponent={this._renderEmptyComponent()}
                     keyExtractor={item => item.post_id.toString()}
                     ItemSeparatorComponent={this._renderItemSeperator}
